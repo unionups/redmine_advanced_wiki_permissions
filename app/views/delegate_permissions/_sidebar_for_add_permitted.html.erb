@@ -1,0 +1,36 @@
+  <% principals = Principal.active.find(:all, :limit => 100, :order => 'type, login, lastname ASC') - @dp.permitted.map{|id| Principal.find(id)} %>
+  <% if principals.any? %>
+    <% remote_form_for(:dp, @dp,
+                       :url => {
+                         :controller => 'delegate_permissions',
+                         :action => @action,
+                         :id => @dp.id,
+                         :project_id => @project.id },
+                       :method => :post,
+                       :loading => '$(\'member-add-submit\').disable();',
+                       :complete => 'if($(\'member-add-submit\')) $(\'member-add-submit\').enable();') do |f| %>
+      <fieldset>
+        <p><%= label_tag "permitted_search", l(:label_principal_search) %><%= text_field_tag 'permitted_search', nil %></p>
+        <%= observe_field(:permitted_search,
+                     :frequency => 0.5,
+                     :update => :permitted,
+                     :url => {
+                       :controller => 'delegate_permissions',
+                       :action => 'autocomplete_for_permitted',
+                       :id => @dp.id,
+                       :project_id => @project.id },
+                     :before => '$("permitted_search").addClassName("ajax-loading")',
+                     :complete => '$("permitted_search").removeClassName("ajax-loading")',
+                     :with => 'q') %>
+
+        <div id="permitted">
+          <%= principals_check_box_tags 'member[permitted][]', principals %>
+        </div>
+
+        <%= hidden_field_tag 'user_id', @dp.user_id if @dp %>
+        <%= hidden_field_tag 'project_id', @project.id %>
+        <p><%= submit_tag l(:button_add), :id => 'member-add-submit' %></p>
+      </fieldset>
+    <% end %>
+  <% end %>
+

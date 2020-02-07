@@ -1,0 +1,17 @@
+<p class="delegate_label">
+  <span id="expander_plus" onclick="Element.show('all-users-for-delegate'); 
+                                    Element.hide('expander_plus'); 
+                                    Element.show('expander_minus'); 
+                                    return false;">&nbsp;</span>
+  <span id="expander_minus" class="hol" onclick="Element.hide('all-users-for-delegate');
+                                                 Element.hide('expander_minus'); 
+                                                 Element.show('expander_plus'); 
+                                                 return false;">&nbsp;</span>
+  <%= l(:label_permitted_all_users, :user => link_to_user(@dp.user)) %>:
+</p>
+<span id="all-users-for-delegate" class="hol">
+  <% @dp.users_for_delegate.each do |user| %>
+    <%= link_to_user user %><br />
+  <% end %>
+</span>
+

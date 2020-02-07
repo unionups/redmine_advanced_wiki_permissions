@@ -1,0 +1,38 @@
+<h3 class = "title"><%= l(:title_update_following_permissions) %></h3>
+
+<p><%= l(:label_update_permissions_for_page_question1) %></p>
+<ul><% @deleted_permissions.each do |permission| %>
+  <li><%= l("label_" + permission.to_s) %></li>
+<% end %></ul>
+<p><%= l(:label_update_permissions_for_page_question2, :user => link_to_user(@dp.user)) %></p>
+
+<p><%= l(:label_principals_list) %></p>
+<div id="users_for_watcher">
+  <% @wpps.each do |wpp| %>
+    <p class=<%= "#{wpp.principal.class.to_s.downcase}" %> style="margin: 0px; padding: 0px;"><%= link_to_user wpp.principal %></p>
+  <% end %>
+</div>
+
+<p class="buttons_to_destroy_wpps">
+  <%= link_to_remote(l(:label_delete_all_permissions_yes), { 
+                  :url => {
+                    :controller => 'wiki_permissions',
+                    :action => 'update_following_wpps',
+                    :principal_id => @principal.id,
+                    :dp_id => @dp.id,
+                    :deleted_permissions => @deleted_permissions,
+                    :id => @wiki_page.title,
+                    :project_id => @project.id } },
+                :onclick => "hideModal(this);",
+                :class => "button_ok" ) %>
+  <%= link_to_remote(l(:label_delete_all_permissions_no), { 
+                  :url => {
+                    :controller => 'wiki_permissions',
+                    :action => 'update_page',
+                    :principal_id => @principal.id,
+                    :dp_id => @dp.id,
+                    :id => @wiki_page.title,
+                    :project_id => @project.id } },
+                :onclick => "hideModal(this);" ) %>
+</p>
+

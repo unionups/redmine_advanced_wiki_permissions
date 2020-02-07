@@ -1,0 +1,36 @@
+  <% users = @dp.users_from_permitted_groups - @dp.banned.map{|id| User.find(id)} %>
+  <% if users.any? %>
+    <% remote_form_for(:dp, @dp,
+                       :url => {
+                         :controller => 'delegate_permissions',
+                         :action => @action,
+                         :id => @dp.id,
+                         :project_id => @project.id },
+                       :method => :post,
+                       :loading => '$(\'member-add-submit\').disable();',
+                       :complete => 'if($(\'member-add-submit\')) $(\'member-add-submit\').enable();') do |f| %>
+      <fieldset>
+        <p><%= label_tag "banned_search", l(:label_user_search) %><%= text_field_tag 'banned_search', nil %></p>
+        <%= observe_field(:banned_search,
+                     :frequency => 0.5,
+                     :update => :banned,
+                     :url => {
+                       :controller => 'delegate_permissions',
+                       :action => 'autocomplete_for_banned',
+                       :id => @dp.id,
+                       :project_id => @project.id },
+                     :before => '$("banned_search").addClassName("ajax-loading")',
+                     :complete => '$("banned_search").removeClassName("ajax-loading")',
+                     :with => 'q') %>
+
+        <div id="banned">
+          <%= principals_check_box_tags 'member[banned][]', users %>
+        </div>
+
+        <%= hidden_field_tag 'user_id', @dp.user_id if @dp %>
+        <%= hidden_field_tag 'project_id', @project.id %>
+        <p><%= submit_tag l(:button_add), :id => 'member-add-submit' %></p>
+      </fieldset>
+    <% end %>
+  <% end %>
+

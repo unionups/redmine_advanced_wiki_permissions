@@ -1,0 +1,37 @@
+<div class="splitcontentright">
+  <% users = User.active.find(:all, :limit => 100, :order => 'type, login, lastname ASC') - @project.delegate_permissions.map(&:user_id).map{|id| User.find(id)} %>
+  <% @project.reload %>
+<% if users.any? %>
+  <% remote_form_for(:dp, @dp,
+                     :url => {
+                       :controller => 'delegate_permissions',
+                       :action => 'new',
+                       :project_id => @project.id },
+                     :method => :post,
+                     :loading => '$(\'member-add-submit\').disable();',
+                     :complete => 'if($(\'member-add-submit\')) $(\'member-add-submit\').enable();') do |f| %>
+    <fieldset><legend><%=l(:label_delegate_permission_for_new_member)%></legend>
+
+    <p><%= label_tag "user_search", l(:label_user_search) %><%= text_field_tag 'user_search', nil %></p>
+    <%= observe_field(:user_search,
+                 :frequency => 0.5,
+                 :update => :users,
+                 :url => {
+                   :controller => 'delegate_permissions',
+                   :action => 'autocomplete_for_new_dp',
+                   :project_id => @project },
+                 :before => '$("user_search").addClassName("ajax-loading")',
+                 :complete => '$("user_search").removeClassName("ajax-loading")',
+                 :with => 'q') %>
+
+    <div id="users">
+      <%= principals_check_box_tags 'member[user_ids][]', users %>
+    </div>
+
+    <%= hidden_field_tag 'user_id', @dp.user_id if @dp %>
+    <%= hidden_field_tag 'project_id', @project.id %>
+    <p><%= submit_tag l(:button_add), :id => 'member-add-submit' %></p>
+    </fieldset>
+  <% end %>
+<% end %>
+</div>

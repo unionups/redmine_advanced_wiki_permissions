@@ -1,0 +1,13 @@
+<div id="tab-content-members" class="tab-content">
+  <div class="splitcontentleft">
+
+    <% if User.current.wiki_manager?(@project) %>
+      <%= link_to(l(:ignore_project_permissions), { :controller => 'wiki', :action => 'ignore_permissions', :id => @wiki_page.title, :ignore_permissions => 1 }, :method => :post, :class => 'icon icon-lock') if !@wiki_page.ignore_permissions? %>
+      <%= link_to(l(:dont_ignore_project_permissions), { :controller => 'wiki', :action => 'ignore_permissions', :id => @wiki_page.title, :ignore_permissions => 0 }, :method => :post, :class => 'icon icon-unlock') if @wiki_page.ignore_permissions? %>
+    <% end %>
+
+    <%= render :partial => 'wiki_permissions/permissions_table' %>
+  </div>
+
+  <%= render :partial => 'wiki_permissions/sidebar' %>
+</div>

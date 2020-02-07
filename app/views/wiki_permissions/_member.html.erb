@@ -1,0 +1,67 @@
+<tr id="member-<%= principal.id %>" class="<%= cycle 'odd', 'even' %> member">
+  <td class=<%= "#{principal.class.to_s.downcase}" %>><%= link_to_user principal %></td>
+  <td>
+    <span id="member-<%= principal.id %>-permissions">
+      <% if @wiki_page.ignore_permissions? %>
+        <% if wpp.permissions.any? %><span><%= permissions_to_s(wpp.permissions) %></span><% end %>
+      <% else %>
+        <% if wpp.permissions.any? %><span class="members_permissions"><%= permissions_to_s(wpp.permissions) %></span><% end %>
+        <% if wpp.bans.any? %><span class="members_bans"><%= permissions_to_s(wpp.bans) %></span><% end %>
+    <% end %>
+    </span>
+      <% remote_form_for(:wpp, principal.id,
+                         :url => {
+                           :controller => 'wiki_permissions',
+                           :action => 'update',
+                           :wpp_id => wpp.id,
+                           :id => @wiki_page.title },
+                         :method => :post,
+                         :html => {
+                           :id => "member-#{principal.id}-permissions-form",
+                           :class => 'hol' }) do |f| %>
+
+        <% if @wiki_page.ignore_permissions? %>
+          <span>
+            <% delegate_list.each do |permission| %>
+              <label><%= check_box_tag 'member[permissions][]', permission.to_s, principal.wiki_allowed_to?(@wiki_page, permission) %>
+              <%=h l("label_" + permission.to_s) %></label><br />
+            <% end %>
+          </span>
+        <% else %>
+          <span class="members_permissions">
+            <% delegate_list.each do |permission| %>
+              <label><%= check_box_tag 'member[permissions][]', permission.to_s, (principal.wiki_allowed_to?(@wiki_page, permission) || disabled_permissions(principal).include?(permission)), :disabled =>  disabled_permissions(principal).include?(permission) %>
+              <%=h l("label_" + permission.to_s) %></label><br />
+            <% end %>
+          </span>
+          <span class="members_bans">
+            <% disabled_permissions(principal).each do |permission| %>
+              <label><%= check_box_tag 'member[bans][]', permission.to_s, wpp.bans.include?(permission) %>
+              <%=h l("label_" + permission.to_s) %></label><br />
+            <% end %>
+          </span>
+        <% end %>
+
+        <%= hidden_field_tag 'principal_id', principal.id %>
+        <%= hidden_field_tag 'project_id', @project.id %>
+        <span class="permissions_bans_buttons">
+          <%= submit_tag l(:button_change), :class => "small" %>
+          <%= link_to_function l(:button_cancel), "$('member-#{principal.id}-permissions').show(); $('member-#{principal.id}-permissions-form').hide(); return false;" %>
+        </span>
+      <% end %>
+  </td>
+  <td class="buttons">
+  <%= link_to_function l(:button_edit), "$('member-#{principal.id}-permissions').hide(); $('member-#{principal.id}-permissions-form').show(); return false;", :class => 'icon icon-edit' %>
+  <%= link_to_remote(l(:button_delete), { :url => {
+                                            :controller => 'wiki_permissions',
+                                            :action => 'destroy',
+                                            :wpp_id => wpp.id,
+                                            :id => @wiki_page.title,
+                                            :project_id => @project.id },
+                                          :method => :post,
+                                          :confirm => (!User.current.admin? && principal.id == User.current ? l(:text_own_membership_delete_confirmation) : nil)
+                                        }, :title => l(:button_delete),
+                                           :class => 'icon icon-del') %>
+  </td>
+</tr>
+

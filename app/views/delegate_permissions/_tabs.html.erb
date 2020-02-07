@@ -1,0 +1,26 @@
+<div class="tabs">
+  <% dp_tabs = [{:name => 'permitted', :partial => 'delegate_permissions/sidebar_for_add_permitted', :label => :label_add_permitted},
+                {:name => 'banned', :partial => 'delegate_permissions/sidebar_for_add_banned', :label => :label_add_banned}] %>
+  <% selected_tab = params[:dp_tab] ? params[:dp_tab].to_s : dp_tabs.first[:name] %>
+  <ul>
+    <% dp_tabs.each do |tab| -%>
+      <% unactive_tab = (dp_tabs - [tab]).first %>
+      <li><%= link_to l(tab[:label]), { :tab => tab[:name] },
+                                        :id => "tab-#{tab[:name]}",
+                                        :class => (tab[:name] != selected_tab ? nil : 'selected'),
+                                        :onclick => "Element.removeClassName('tab-#{unactive_tab[:name]}', 'selected');
+                                                     Element.addClassName('tab-#{tab[:name]}', 'selected');
+                                                     Element.hide('tab-content-#{unactive_tab[:name]}');
+                                                     Element.show('tab-content-#{tab[:name]}');
+                                                     return false;" %></li>
+    <% end -%>
+  </ul>
+</div>
+
+<% dp_tabs.each do |tab| -%>
+  <%= content_tag('div', render(:partial => tab[:partial], :locals => {:dp_tab => tab} ),
+                       :id => "tab-content-#{tab[:name]}",
+                       :style => (tab[:name] != selected_tab ? 'display:none' : nil),
+                       :class => 'tab-content') %>
+<% end -%>
+

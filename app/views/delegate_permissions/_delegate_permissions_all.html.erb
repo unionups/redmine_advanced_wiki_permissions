@@ -1,0 +1,81 @@
+<div class="dp_all" id="dp_all">
+  <script> hideOnLoad(); </script>
+<div class="splitcontentleft">
+<% delegate_permissions = @project.delegate_permissions %>
+<% if delegate_permissions.any? %>
+<table class="list members">
+  <thead><tr>
+    <th><%= l(:label_user) %></th>
+    <th><%= l(:label_permitted_principals) %></th>
+    <th><%= l(:label_banned_principals) %></th>
+    <th style="width:15%"></th>
+  </tr></thead>
+  <tbody>
+    <% delegate_permissions.each do |delegate_permission| %>
+      <% user = delegate_permission.user %>
+      <tr id="member-<%= user.id %>" class="<%= cycle 'odd', 'even' %> member">
+        <td class="user"><%= link_to_user user %></td>
+
+        <td>
+          <span id="principals-for-delegate-<%= delegate_permission.id %>">
+            <% delegate_permission.permitted.each do |permitt| %>
+              <%= link_to_user Principal.find(permitt) %><br />
+            <% end %>
+          </span>
+          <span id="all-users-for-delegate-<%= delegate_permission.id %>" class="hol">
+            <% delegate_permission.users_for_delegate.each do |user| %>
+              <%= link_to_user user %><br />
+            <% end %>
+          </span>
+        </td>
+
+        <td><% delegate_permission.banned.each do |bann| %>
+          <%= link_to_user Principal.find(bann) %><br />
+        <% end %></td>
+
+        <td class="buttons" style="white-space: nowrap">
+          <p id="button-hide-<%= delegate_permission.id %>" class="hol">
+            <%= link_to_function l(:button_hide),
+                "$('all-users-for-delegate-#{delegate_permission.id}').hide();
+                $('button-hide-#{delegate_permission.id}').hide();
+                $('button-expand-#{delegate_permission.id}').show();
+                $('principals-for-delegate-#{delegate_permission.id}').show();
+                return false;", :class => 'icon icon-zoom-out' %>
+          </p>
+          <p id="button-expand-<%= delegate_permission.id %>">
+            <%= link_to_function l(:button_expand),
+                "$('principals-for-delegate-#{delegate_permission.id}').hide();
+                $('button-expand-#{delegate_permission.id}').hide();
+                $('button-hide-#{delegate_permission.id}').show();
+                $('all-users-for-delegate-#{delegate_permission.id}').show();
+                return false;", :class => 'icon icon-zoom-in' %>
+          </p>
+          <%= link_to_remote(l(:button_edit), { :url => {
+                                                  :controller => 'delegate_permissions',
+                                                  :action => 'edit',
+                                                  :id => delegate_permission.id,
+                                                  :project_id => @project.id },
+                                                :method => :post,
+                                              }, :title => l(:button_edit),
+                                             :class => 'icon icon-edit') %>
+          <%= link_to_remote(l(:button_delete), { :url => {
+                                                    :controller => 'delegate_permissions',
+                                                    :action => 'destroy',
+                                                    :id => delegate_permission.id,
+                                                    :project_id => @project.id },
+                                                  :method => :post,
+                                                  :confirm => (!User.current.admin? && user.id == User.current ? l(:text_own_membership_delete_confirmation) : nil)
+                                                }, :title => l(:button_delete),
+                                               :class => 'icon icon-del') %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<% else %>
+  <p class="nodata"><%= l(:label_no_data) %></p>
+<% end %>
+</div>
+
+<%= render :partial => 'delegate_permissions/sidebar_for_new_dp' %>
+</div>

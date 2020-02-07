@@ -1,0 +1,23 @@
+<table class="list permissions members" id="permissions">
+  <thead>
+    <tr>
+      <th><%= l(:label_user) %> / <%= l(:label_group) %></th>
+      <th>
+        <% if @wiki_page.ignore_permissions? %>
+          <span><%= l(:permissions) %></span>
+        <% else %>
+          <span class="members_permissions"><%= l(:permissions) %></span>
+          <span class="members_bans"><%= l(:bans) %></span>
+        <% end %>
+      </th>
+      <th style="width:15%"></th>
+    </tr>
+  </thead>
+  <tbody>
+  <% if visible_permissions.try(:any?) %>
+    <% visible_permissions.sort_by{|wpp| Principal.find(wpp.principal_id).lastname}.each do |wpp| %>
+      <%= render :partial => 'wiki_permissions/member', :locals => {:wpp => wpp, :principal => wpp.principal} %>
+    <% end %>
+  <% end %>
+  </tbody>
+</table>

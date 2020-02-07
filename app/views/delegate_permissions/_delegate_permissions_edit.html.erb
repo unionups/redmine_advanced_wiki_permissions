@@ -1,0 +1,28 @@
+<div class="dp_edit" id="dp_edit">
+  <script> hideOnLoad(); </script>
+  <% @action = @dp.exist? ? 'update' : 'create' %>
+  <h3><%= l("label_#{@action}_delegate_permission".to_sym, :user => link_to_user(@dp.user)) %></h3>
+
+  <div class="splitcontentleft">
+    <%= render :partial => 'delegate_permissions/main_section_for_permitted' %>
+    <%= render :partial => 'delegate_permissions/main_section_for_banned' %>
+    <%= render :partial => 'delegate_permissions/main_section_for_all_permitted' %>
+  </div>
+
+  <div class="splitcontentright">
+    <p class="button_links">
+      <%= link_to_remote(l(:button_change_user), { 
+              :url => {
+                :controller => 'delegate_permissions',
+                :action => 'change_user_edit',
+                :id => @dp.id,
+                :project_id => @project.id } },
+            :class => 'icon icon-change-user' ) %>
+      <%= link_to_remote(l(:button_to_delegate_permissions_list), { :url => {
+                  :controller => 'delegate_permissions',
+                  :action => 'index',
+                  :project_id => @project.id } }, :class => 'icon icon-cancel' ) %>
+    </p>
+    <%= render :partial => 'delegate_permissions/tabs' %>
+  </div>
+</div>

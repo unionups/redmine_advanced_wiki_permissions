@@ -1,0 +1,19 @@
+<h3 class = "title"><%= l(:button_change_user) %></h3>
+
+<p><%= l(:label_current_user) %><em><%= @dp.user %></em></p>
+
+<% remote_form_for :dp, @dp, :url => { :controller => 'delegate_permissions', :action => "change_user_update" } do |f| %> 
+  <span>
+    <p><%= l(:label_head_change_user) %></p>
+    <%= hidden_field_tag "id", + @dp.id %>
+    <%= hidden_field_tag "project_id", + @project.id %>
+    <%= text_field_tag('author_id', @dp.user["login"], :size => "40", :id => 'author_id') %>
+    <%= content_tag(:div,'', :id => "change_user_choices", :class => "autocomplete")%>
+    <%= javascript_tag("new Ajax.Autocompleter('author_id', 'change_user_choices', '#{ url_for(:controller => 'delegate_permissions', :action => 'autocomplete_for_user_change', :project_id => @project.id) }', { minChars: 1, frequency: 0.5, paramName: 'user', select: 'field' });")%>
+  </span>
+
+  <p class="buttons">
+    <%= submit_tag l(:button_save), :name => nil, :onclick => "hideModal(this);" %>
+    <%= submit_tag l(:button_cancel), :name => nil, :onclick => "hideModal(this);", :type => 'button' %>
+  </p>
+<% end %>
