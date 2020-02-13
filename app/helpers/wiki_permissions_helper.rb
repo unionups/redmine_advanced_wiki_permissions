@@ -29,7 +29,8 @@ module WikiPermissionsHelper
       wpp = WikiPagePermission.new
       wpp.principal = principal
       wpp.wiki_page = @wiki_page
-      wpp.delegate_permission = User.current.delegate_permission_for(@project) if User.current.delegate_permission_exist?(@project)
+      dp = User.current.delegate_permission_for(@project)
+      wpp.delegate_permission = dp if dp
       if @wiki_page.ignore_permissions?
         wpp.permissions = params[:member][:permissions] ? params[:member][:permissions].map(&:to_sym) : []
         wpp.bans = []

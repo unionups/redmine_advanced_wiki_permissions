@@ -1,4 +1,4 @@
-class AddIgnorePermissionsToWikiPages < ActiveRecord::Migration
+class AddIgnorePermissionsToWikiPages < ActiveRecord::Migration[4.2]
   def self.up
     add_column :wiki_pages, :ignore_permissions, :boolean
   end

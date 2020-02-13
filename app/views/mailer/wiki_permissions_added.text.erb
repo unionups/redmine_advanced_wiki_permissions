@@ -1,4 +1,4 @@
-<%= l(:mail_body_wiki_permissions_added, :id => h(@wiki_content.page.pretty_title),
+<%= raw l(:mail_body_wiki_permissions_added, :id => h(@wiki_content.page.pretty_title),
                                      :author => h(@wiki_content.versions.first.author)) %>
 <%= @wiki_content.comments %>
 

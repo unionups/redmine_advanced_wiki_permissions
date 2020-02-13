@@ -1,4 +1,4 @@
-class CreateWikiPagePermissions < ActiveRecord::Migration
+class CreateWikiPagePermissions < ActiveRecord::Migration[4.2]
   def self.up
     create_table :wiki_page_permissions do |t|
       t.column :principal_id, :integer

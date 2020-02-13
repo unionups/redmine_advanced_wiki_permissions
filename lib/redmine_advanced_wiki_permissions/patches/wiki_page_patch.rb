@@ -1,12 +1,6 @@
-module WikiPagePatch
-  def self.included(base)
-    base.class_eval do
-      validates_inclusion_of :ignore_permissions, :in => [true, false], :allow_nil => true
-
-      has_many :permissions, :class_name => 'WikiPagePermission', :dependent => :destroy
-
-      alias_method :visible_without_wiki_permissions?, :visible? unless method_defined? :visible_without_wiki_permissions?
-      alias_method :editable_by_without_wiki_permissions?, :editable_by? unless method_defined? :editable_by_without_wiki_permissions?
+module RedmineAdvancedWikiPermissions
+  module Patches
+    module WikiPagePrependPatch
 
       def visible?(user=User.current)
         if wiki.project &&
@@ -14,7 +8,7 @@ module WikiPagePatch
            wiki.project.module_enabled?('redmine_advanced_wiki_permissions')
           return !user.nil? && user.wiki_allowed_to?(self, :view_wiki_pages)
         end
-        visible_without_wiki_permissions?
+        super
       end
 
       # Returns true if usr is allowed to edit the page, otherwise false
@@ -37,5 +31,15 @@ module WikiPagePatch
         principals = permissions.map{|wpp| Principal.find(wpp.principal_id)}
       end
     end
+    module WikiPagePatch
+      extend ActiveSupport::Concern
+      included do
+        validates_inclusion_of :ignore_permissions, :in => [true, false], :allow_nil => true
+        has_many :permissions, :class_name => 'WikiPagePermission', :dependent => :destroy
+      end
+    end
   end
 end
+
+WikiPage.send :include, RedmineAdvancedWikiPermissions::Patches::WikiPagePatch
+WikiPage.send :prepend, RedmineAdvancedWikiPermissions::Patches::WikiPagePrependPatch

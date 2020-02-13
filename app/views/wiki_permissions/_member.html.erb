@@ -1,6 +1,6 @@
-<tr id="member-<%= principal.id %>" class="<%= cycle 'odd', 'even' %> member">
-  <td class=<%= "#{principal.class.to_s.downcase}" %>><%= link_to_user principal %></td>
-  <td>
+<tr id="member-<%= principal.id %>" class="<%= cycle 'odd', 'even' %> member" >
+  <td class="#{principal.class.to_s.downcase}" ><%= link_to_user principal %></td>
+  <td style="text-align: left" >
     <span id="member-<%= principal.id %>-permissions">
       <% if @wiki_page.ignore_permissions? %>
         <% if wpp.permissions.any? %><span><%= permissions_to_s(wpp.permissions) %></span><% end %>
@@ -9,16 +9,13 @@
         <% if wpp.bans.any? %><span class="members_bans"><%= permissions_to_s(wpp.bans) %></span><% end %>
     <% end %>
     </span>
-      <% remote_form_for(:wpp, principal.id,
-                         :url => {
-                           :controller => 'wiki_permissions',
-                           :action => 'update',
-                           :wpp_id => wpp.id,
-                           :id => @wiki_page.title },
-                         :method => :post,
-                         :html => {
-                           :id => "member-#{principal.id}-permissions-form",
-                           :class => 'hol' }) do |f| %>
+      <%= remote_form_for(:wpp, wpp,
+                        url: permissions_path(project_id: @project.id, id: @wiki_page.title),
+                        method: :patch,                        
+                        html: {
+                          :id => "member-#{principal.id}-permissions-form",
+                          :class => 'hol'
+                         }) do |f| %>
 
         <% if @wiki_page.ignore_permissions? %>
           <span>
@@ -42,23 +39,24 @@
           </span>
         <% end %>
 
-        <%= hidden_field_tag 'principal_id', principal.id %>
-        <%= hidden_field_tag 'project_id', @project.id %>
+        <%= hidden_field_tag :principal_id, principal.id %>
+        <%= hidden_field_tag :wpp_id, wpp.id %>
+        
         <span class="permissions_bans_buttons">
-          <%= submit_tag l(:button_change), :class => "small" %>
-          <%= link_to_function l(:button_cancel), "$('member-#{principal.id}-permissions').show(); $('member-#{principal.id}-permissions-form').hide(); return false;" %>
+          <br/>
+          <br/>
+          <%= submit_tag l(:button_change), data: {disable_with: "Please wait..."}, :class => "small" %>
+          <%= link_to_function l(:button_cancel), "$('#member-#{principal.id}-permissions').show(); $('#member-#{principal.id}-permissions-form').hide(); return false;" %>
+        <br/>
+        <br/>
         </span>
       <% end %>
   </td>
   <td class="buttons">
-  <%= link_to_function l(:button_edit), "$('member-#{principal.id}-permissions').hide(); $('member-#{principal.id}-permissions-form').show(); return false;", :class => 'icon icon-edit' %>
-  <%= link_to_remote(l(:button_delete), { :url => {
-                                            :controller => 'wiki_permissions',
-                                            :action => 'destroy',
-                                            :wpp_id => wpp.id,
-                                            :id => @wiki_page.title,
-                                            :project_id => @project.id },
-                                          :method => :post,
+  <%= link_to_function l(:button_edit), "$('#member-#{principal.id}-permissions').hide(); $('#member-#{principal.id}-permissions-form').show(); return false;", :class => 'icon icon-edit' %>
+  <%= link_to_remote(l(:button_delete), { 
+                          url: destroy_permissions_path(project_id: @project.id, id: @wiki_page.title, :wpp_id => wpp.id),
+                                           :method => :delete,
                                           :confirm => (!User.current.admin? && principal.id == User.current ? l(:text_own_membership_delete_confirmation) : nil)
                                         }, :title => l(:button_delete),
                                            :class => 'icon icon-del') %>

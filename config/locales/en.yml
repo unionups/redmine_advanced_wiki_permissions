@@ -14,8 +14,8 @@ en:
   button_expand: "Expand"
   button_hide: "Hide"
   label_delegate_permission_for_new_member: "Add permission for user"
-  label_create_delegate_permission: "Create the permission 'delegate permissions' for user %{user}"
-  label_update_delegate_permission: "Update the permission 'delegate permissions' for user %{user}"
+  label_create_delegate_permission: Create the permission 'delegate permissions' for user %{user}
+  label_update_delegate_permission: Update the permission 'delegate permissions' for user %{user}
   label_add_permitted: "Can delegate"
   label_add_banned: "Can't delegate"
   button_change_user: "Change user"

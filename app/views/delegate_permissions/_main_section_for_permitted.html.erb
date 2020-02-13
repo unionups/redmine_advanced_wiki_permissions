@@ -14,14 +14,14 @@
           <tr id="member-<%= principal.id %>" class="<%= cycle 'odd', 'even' %> member">
             <td class=<%= "#{principal.class.to_s.downcase}" %>><%= link_to_user principal %></td>
             <td class="buttons">
-              <%= link_to_remote(l(:button_delete), { :url => {
-                                            :controller => 'delegate_permissions',
-                                            :action => 'destroy_permitted',
+              <%= link_to_remote(l(:button_delete), { 
+                                          url: destroy_permitted_project_delegate_permissions_path(
                                             :id => @dp.id,
                                             :project_id => @project.id,
-                                            :principal_id => principal.id },
-                                          :method => :post,
-                                          :confirm => (!User.current.admin? && principal.id == User.current ? l(:text_own_membership_delete_confirmation) : nil)
+                                            :principal_id => principal.id 
+                                          ),
+                                          method:  :delete,
+                                          confirm: (!User.current.admin? && principal.id == User.current ? l(:text_own_membership_delete_confirmation) : nil)
                                         }, :title => l(:button_delete),
                                            :class => 'icon icon-del') %>
             </td>

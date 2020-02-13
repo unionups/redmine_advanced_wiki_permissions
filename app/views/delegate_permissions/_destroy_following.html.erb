@@ -1,21 +1,22 @@
 <h3 class = "title"><%= l(:title_delete_permission) %></h3>
 
-<p><%= l(:label_delete_all_permissions_question, :user => link_to_user(User.find(user_id))) %></p>
+<p><%= raw l(:label_delete_all_permissions_question, :user => link_to_user(User.find(@user_id))) %></p>
 
 <p class="buttons_to_destroy_wpps">
   <%= link_to_remote(l(:label_delete_all_permissions_yes), { 
-                  :url => {
-                    :controller => 'delegate_permissions',
-                    :action => 'destroy_following_wpps',
+                  url: destroy_following_wpps_project_delegate_permissions_path(
                     :id => @deleted_dp_id,
-                    :project_id => @project.id } },
+                    :project_id => @project.id
+                  ),
+                  method: :delete
+                },
                 :onclick => "hideModal(this);",
                 :class => "button_ok" ) %>
   <%= link_to_remote(l(:label_delete_all_permissions_no), { 
-                  :url => {
-                    :controller => 'delegate_permissions',
-                    :action => 'update_following_wpps',
+                  url: update_following_wpps_project_delegate_permissions_path(
                     :id => @deleted_dp_id,
-                    :project_id => @project.id } },
-                :onclick => "hideModal(this);" ) %>
+                    :project_id => @project.id
+                  )
+                  }, 
+                  :onclick => "hideModal(this);" ) %>
 </p>

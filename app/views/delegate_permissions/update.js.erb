@@ -1,0 +1,9 @@
+$("#tab-content-manage_wiki_rights").html("<%= j render(partial: 'projects/settings/manage_wiki_rights') %>");
+
+<% if @principial_ids.present? %>
+  <% @principial_ids.each do |id| %>
+    $("member-#{id}").highlight();
+  <%end%>  
+<%end%>
+
+$('#ajax-indicator').hide();

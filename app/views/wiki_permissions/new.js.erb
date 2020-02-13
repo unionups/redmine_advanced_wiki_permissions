@@ -1,0 +1,6 @@
+$("#tab-content-members").html("<%= j render(partial: 'permissions_content') %>");
+hideOnLoad();
+<% @principals.each do |principal| %> 
+  $("#member-<%= principal.id %>").highlight();
+<%end%>
+$('#ajax-indicator').hide();

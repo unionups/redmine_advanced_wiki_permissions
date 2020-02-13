@@ -1,4 +1,4 @@
-class CreateDelegatePermissions < ActiveRecord::Migration
+class CreateDelegatePermissions < ActiveRecord::Migration[4.2]
   def self.up
     create_table :delegate_permissions do |t|
       t.column :user_id, :integer

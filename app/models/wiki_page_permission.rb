@@ -81,7 +81,7 @@ class WikiPagePermission < ActiveRecord::Base
     return false if self.permissions.empty?
     recipients = mail_recipients
     while recipients.any?
-      Mailer.deliver_wiki_permissions_added(self.wiki_page.content, recipients.shift(Mailer::MAX_RECIPIENTS_NUMBER || 100))
+      Mailer.deliver_wiki_permissions_added(self.wiki_page.content, recipients.shift(100))
     end
   end
 

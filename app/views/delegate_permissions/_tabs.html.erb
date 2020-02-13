@@ -5,14 +5,15 @@
   <ul>
     <% dp_tabs.each do |tab| -%>
       <% unactive_tab = (dp_tabs - [tab]).first %>
-      <li><%= link_to l(tab[:label]), { :tab => tab[:name] },
-                                        :id => "tab-#{tab[:name]}",
-                                        :class => (tab[:name] != selected_tab ? nil : 'selected'),
-                                        :onclick => "Element.removeClassName('tab-#{unactive_tab[:name]}', 'selected');
-                                                     Element.addClassName('tab-#{tab[:name]}', 'selected');
-                                                     Element.hide('tab-content-#{unactive_tab[:name]}');
-                                                     Element.show('tab-content-#{tab[:name]}');
-                                                     return false;" %></li>
+      <li><%= link_to_function  l(tab[:label]), "
+                                      $('#tab-#{unactive_tab[:name]}').removeClass('selected');
+                                      $('#tab-#{tab[:name]}').addClass('selected');
+                                      $('#tab-content-#{unactive_tab[:name]}').hide();
+                                      $('#tab-content-#{tab[:name]}').show();
+                                      ",
+                                      :id => "tab-#{tab[:name]}",
+                                      :class => (tab[:name] != selected_tab ? nil : 'selected')
+                                        %></li>
     <% end -%>
   </ul>
 </div>

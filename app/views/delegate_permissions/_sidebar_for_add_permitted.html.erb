@@ -1,12 +1,12 @@
-  <% principals = Principal.active.find(:all, :limit => 100, :order => 'type, login, lastname ASC') - @dp.permitted.map{|id| Principal.find(id)} %>
+  <% principals = Principal.active.order('type, login, lastname ASC').limit(100) - @dp.permitted.map{|id| Principal.find(id)} %>
   <% if principals.any? %>
-    <% remote_form_for(:dp, @dp,
+    <%= remote_form_for(:dp, @dp,
                        :url => {
                          :controller => 'delegate_permissions',
                          :action => @action,
                          :id => @dp.id,
                          :project_id => @project.id },
-                       :method => :post,
+                         
                        :loading => '$(\'member-add-submit\').disable();',
                        :complete => 'if($(\'member-add-submit\')) $(\'member-add-submit\').enable();') do |f| %>
       <fieldset>
@@ -19,8 +19,8 @@
                        :action => 'autocomplete_for_permitted',
                        :id => @dp.id,
                        :project_id => @project.id },
-                     :before => '$("permitted_search").addClassName("ajax-loading")',
-                     :complete => '$("permitted_search").removeClassName("ajax-loading")',
+                     :before => '$("permitted_search").addClass("ajax-loading")',
+                     :complete => '$("permitted_search").removeClass("ajax-loading")',
                      :with => 'q') %>
 
         <div id="permitted">

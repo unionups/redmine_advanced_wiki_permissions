@@ -1,0 +1,10 @@
+
+<%if @wpps.present? && @wpps.any? %>
+  $("#ajax-modal").html("<%= j render(partial: 'update_following_wpps') %>");
+  showModal('ajax-modal', '400px');
+<%else%>
+  $("#tab-content-members").html("<%= j render(partial: 'permissions_content') %>");
+  hideOnLoad();
+  $("#member-<%= @principal.id %>").highlight();
+<%end%>
+$('#ajax-indicator').hide();

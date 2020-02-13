@@ -1,11 +1,8 @@
-module ProjectsHelperPatch
-  def self.included(base)
-    base.class_eval do
-      alias_method :project_settings_tabs_without_wiki_permissions,
-                   :project_settings_tabs unless method_defined? :project_settings_tabs_without_wiki_permissions
-
+module RedmineAdvancedWikiPermissions
+  module Patches
+    module ProjectsHelperPatch
       def project_settings_tabs
-        tabs = project_settings_tabs_without_wiki_permissions
+        tabs = super
         tab = { :name => 'manage_wiki_rights',
                 :action => :manage_wiki_rights,
                 :partial => 'projects/settings/manage_wiki_rights',
@@ -20,3 +17,5 @@ module ProjectsHelperPatch
     end
   end
 end
+
+ProjectsHelper.send :prepend, RedmineAdvancedWikiPermissions::Patches::ProjectsHelperPatch

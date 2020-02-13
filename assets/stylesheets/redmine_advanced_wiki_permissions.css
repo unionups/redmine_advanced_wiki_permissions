@@ -117,3 +117,15 @@ a.button_ok:active {
   border-top: 1px solid #666\9;
 }
 
+@keyframes highlight {
+    0% {
+        background: #ffff99; 
+    }
+    100% {
+        background: none;
+    }
+}
+
+.highlight {
+    animation: highlight 2s;
+}

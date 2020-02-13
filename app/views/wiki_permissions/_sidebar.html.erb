@@ -3,12 +3,8 @@
 <% principals = User.current.principals_for_delegate(@project) - @wiki_page.permissions.map{|wpp| Principal.find(wpp.principal_id)} %>
 
 <% if principals.any? %>
-  <% remote_form_for(:wpp, @member,
-                     :url => {
-                       :controller => 'wiki_permissions',
-                       :action => 'new',
-                       :id => @wiki_page.title },
-                     :method => :post,
+  <%= remote_form_for(:wpp, @member, url: new_permissions_path(project_id: @project.id, id: @wiki_page.title),
+                     :method => :get,
                      :loading => '$(\'member-add-submit\').disable();',
                      :complete => 'if($(\'member-add-submit\')) $(\'member-add-submit\').enable();') do |f| %>
     <fieldset><legend><%=l(:label_member_new)%></legend>
@@ -25,7 +21,7 @@
                  :with => 'q') %>
 
     <div id="principals">
-      <%#= wiki_permissions_check_box_tags 'member[user_ids][]', principals %>
+      <% #= wiki_permissions_check_box_tags 'member[user_ids][]', principals %>
       <%= principals_check_box_tags 'member[user_ids][]', principals %>
     </div>
 
@@ -38,8 +34,8 @@
     <% delegate_list.each do |ban| %>
       <label><%= check_box_tag 'member[bans][]', ban.to_s %> <%=h l("label_" + ban.to_s) %></label>
     <% end %></p>
-    <%= hidden_field_tag 'project_id', @project.id %>
-    <p><%= submit_tag l(:button_add), :id => 'member-add-submit' %></p>
+
+    <p><%= f.submit l(:button_add), :id => 'member-add-submit' , data: {disable_with: "Please wait..."}%></p>
     </fieldset>
   <% end %>
 <% end %>

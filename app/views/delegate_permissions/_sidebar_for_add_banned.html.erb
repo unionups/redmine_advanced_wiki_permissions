@@ -1,6 +1,6 @@
   <% users = @dp.users_from_permitted_groups - @dp.banned.map{|id| User.find(id)} %>
   <% if users.any? %>
-    <% remote_form_for(:dp, @dp,
+    <%= remote_form_for(:dp, @dp,
                        :url => {
                          :controller => 'delegate_permissions',
                          :action => @action,
@@ -19,8 +19,8 @@
                        :action => 'autocomplete_for_banned',
                        :id => @dp.id,
                        :project_id => @project.id },
-                     :before => '$("banned_search").addClassName("ajax-loading")',
-                     :complete => '$("banned_search").removeClassName("ajax-loading")',
+                     :before => '$("banned_search").addClass("ajax-loading")',
+                     :complete => '$("banned_search").removeClass("ajax-loading")',
                      :with => 'q') %>
 
         <div id="banned">

@@ -1,4 +1,4 @@
-class AddBansToWikiPagePermissions < ActiveRecord::Migration
+class AddBansToWikiPagePermissions < ActiveRecord::Migration[4.2]
   def self.up
     add_column :wiki_page_permissions, :bans, :string
   end

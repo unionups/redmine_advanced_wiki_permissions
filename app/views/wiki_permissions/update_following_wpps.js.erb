@@ -1,0 +1,7 @@
+$("#tab-content-members").html("<%= j render(partial: 'permissions_content') %>");
+hideOnLoad();
+$("#member-<%= @principal.id %>").highlight();
+<% @wpps.each do |wpp|%>
+  $("#member-<%= @principal.id %>").highlight();
+<%end%>
+$('#ajax-indicator').hide();

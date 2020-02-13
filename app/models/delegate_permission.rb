@@ -1,4 +1,6 @@
 class DelegatePermission < ActiveRecord::Base
+  include Redmine::SafeAttributes
+
   unloadable
 
   belongs_to :user
@@ -12,6 +14,13 @@ class DelegatePermission < ActiveRecord::Base
 
   validate :validate_permitted
   validate :validate_banned
+
+  safe_attributes(
+    :user_id,
+    :project_id,
+    :permitted,
+    :banned
+  )
 
   def permitted
     read_attribute(:permitted) || []
