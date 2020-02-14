@@ -20,19 +20,20 @@
                    :project_id => @project },
                  :with => 'q') %>
 
-    <div id="principals">
-      <% #= wiki_permissions_check_box_tags 'member[user_ids][]', principals %>
+    <div id="principals" >
       <%= principals_check_box_tags 'member[user_ids][]', principals %>
     </div>
 
     <p><b><%= l(:permissions) %>:</b><br/>
     <% delegate_list.each do |permission| %>
       <label><%= check_box_tag 'member[permissions][]', permission.to_s %> <%=h l("label_" + permission.to_s) %></label>
+      <br/>
     <% end %></p>
 
     <p><b><%= l(:bans) %>:</b><br/>
     <% delegate_list.each do |ban| %>
       <label><%= check_box_tag 'member[bans][]', ban.to_s %> <%=h l("label_" + ban.to_s) %></label>
+      <br/>
     <% end %></p>
 
     <p><%= f.submit l(:button_add), :id => 'member-add-submit' , data: {disable_with: "Please wait..."}%></p>

@@ -129,3 +129,12 @@ a.button_ok:active {
 .highlight {
     animation: highlight 2s;
 }
+
+div#principals {
+  max-height: 60%;
+  overflow-y: auto;
+
+}
+div#principals label{
+  display: block;
+}
