@@ -237,7 +237,7 @@ module RedmineAdvancedWikiPermissions
           if @project &&
              @project.module_enabled?('wiki') &&
              @project.module_enabled?('redmine_advanced_wiki_permissions')
-            @pages = @wiki.pages.all(:order => 'title', :include => [:content, :attachments], :limit => 75)
+            @pages = @wiki.pages.includes(:content, :attachments).order('title').first(75)
             respond_to do |format|
               format.html {
                 export = render_to_string :action => 'export_multiple', :layout => false
@@ -253,18 +253,11 @@ module RedmineAdvancedWikiPermissions
         end
 
         
-        def ignore_permissions
-          find_existing_page
-          unless User.current.wiki_manager?(@page.project)
-            return render_403
-          end
-          @page.update_attribute :ignore_permissions, params[:ignore_permissions]
-          redirect_to :action => 'permissions', :project_id => @project, :id => @page.title
-        end
+        
 
       private
         def load_pages_for_index
-          @pages = @wiki.pages.with_updated_on.all(:order => 'title', :include => {:wiki => :project})
+          @pages = @wiki.pages.with_updated_on.includes(wiki: :project).order('title').to_a
           if @project.module_enabled?('redmine_advanced_wiki_permissions')
             @pages.reject!{ |page| !User.current.wiki_allowed_to?(page, :view_wiki_pages) }
           else
@@ -276,7 +269,9 @@ module RedmineAdvancedWikiPermissions
     module WikiControllerPatch
       extend ActiveSupport::Concern
       included do 
+
         helper :wiki_permissions
+        helper :watchers
         include WikiPermissionsHelper
 
         def permissions
@@ -287,6 +282,15 @@ module RedmineAdvancedWikiPermissions
           @wiki_page_permissions = @page.permissions
           @wiki_page = @page
           render :template => 'wiki_permissions/permissions'
+        end
+
+        def ignore_permissions
+          find_existing_page
+          unless User.current.wiki_manager?(@page.project)
+            return render_403
+          end
+          @page.update_attribute :ignore_permissions, params[:ignore_permissions]
+          redirect_to :action => 'permissions', :project_id => @project, :id => @page.title
         end
       end
     end
