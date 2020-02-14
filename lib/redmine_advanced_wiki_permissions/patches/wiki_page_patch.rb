@@ -21,21 +21,22 @@ module RedmineAdvancedWikiPermissions
           !protected? || usr.allowed_to?(:protect_wiki_pages, wiki.project)
         end
       end
-
-      def ignore_permissions?
-        return true if ignore_permissions
-        false
-      end
-
-      def principals_with_permissions
-        principals = permissions.map{|wpp| Principal.find(wpp.principal_id)}
-      end
+      
     end
     module WikiPagePatch
       extend ActiveSupport::Concern
       included do
         validates_inclusion_of :ignore_permissions, :in => [true, false], :allow_nil => true
         has_many :permissions, :class_name => 'WikiPagePermission', :dependent => :destroy
+
+        def ignore_permissions?
+          return true if ignore_permissions
+          false
+        end
+  
+        def principals_with_permissions
+          principals = permissions.map{|wpp| Principal.find(wpp.principal_id)}
+        end
       end
     end
   end
