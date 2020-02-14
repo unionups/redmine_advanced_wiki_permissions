@@ -131,7 +131,7 @@ a.button_ok:active {
 }
 
 div#principals {
-  max-height: 60%;
+  height: 20rem;
   overflow-y: auto;
 
 }
