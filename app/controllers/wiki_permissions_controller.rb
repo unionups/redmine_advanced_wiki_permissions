@@ -84,7 +84,7 @@ class WikiPermissionsController < ApplicationController
         user.delegate_permission_for(@project)
         @principals &= user.principals_for_delegate(@project)
       end
-      @principals = @principals[0..100]
+      # @principals = @principals[0..100]
       render :layout => false
   end
 
