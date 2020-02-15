@@ -130,11 +130,11 @@ a.button_ok:active {
     animation: highlight 2s;
 }
 
-div#principals {
+div#principals.add_permissions {
   max-height: 25rem;
   overflow-y: auto;
 
 }
-div#principals label{
+div#principals.add_permissions label{
   display: block;
 }

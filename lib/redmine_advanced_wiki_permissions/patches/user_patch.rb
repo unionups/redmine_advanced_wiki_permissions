@@ -88,7 +88,8 @@ module RedmineAdvancedWikiPermissions
 
         def principals_for_delegate(project)
           return render_403 unless allowed_to_manage_wiki_rights?(project)
-          return Principal.active.order('type, login, lastname ASC').first(100) if wiki_manager?(project)#find(:all, :limit => 100, :order => 'type, login, lastname ASC') if wiki_manager?(project)
+          #return Principal.active.order('type , login, lastname DESC').first(100) if wiki_manager?(project)
+          return Principal.active.sorted.first(100) if wiki_manager?(project)
           delegate_permission_for(project).principals_for_delegate[0..100]
         end
 

@@ -77,7 +77,8 @@ class WikiPermissionsController < ApplicationController
   def autocomplete_for_member
       user = User.current
       delete_ids = @wiki_page.permissions.map(&:principal_id)
-      @principals = Principal.active.like(params[:q])
+
+      @principals = Principal.active.like(params[:q]).sorted
       @principals = @principals.to_a.delete_if {|principal| delete_ids.include?(principal.id)}
       unless user.wiki_manager?(@project)
         user.delegate_permission_for(@project)
