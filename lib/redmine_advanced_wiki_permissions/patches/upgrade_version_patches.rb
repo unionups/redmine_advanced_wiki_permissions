@@ -3,23 +3,37 @@ module RedmineAdvancedWikiPermissions
     module UpgradeApplicationHelperPatch
 
       def observe_field(field_id, options = {})
+        # js = "$('##{field_id}').observe_field(#{options[:frequency]}, function(){
+        #         let tempUrl='#{url_for options[:url].merge!(only_path: false)}';
+        #         let url = new URL(tempUrl);
+                
+        #         url.searchParams.set('#{options[:with]}', $( this ).val()); 
+        #         $.ajax({
+        #         url: url.href,
+        #         beforeSend: () => {
+        #             #{options[:before]};
+        #           }
+        #         })
+        #         .done( ( html ) => {
+        #           #{options[:complete]};
+        #           $('##{options[:update]}').html(html);
+        #         });
+        #       });"
         js = "$('##{field_id}').observe_field(#{options[:frequency]}, function(){
                 let tempUrl='#{url_for options[:url].merge!(only_path: false)}';
                 let url = new URL(tempUrl);
-                
                 url.searchParams.set('#{options[:with]}', $( this ).val()); 
-                $.ajax({
-                url: url.href,
-                beforeSend: () => {
-                    #{options[:before]};
+             
+                let target = url.pathname + url.search;
+                Rails.ajax({
+                  url: target,
+                  type: 'get',
+                  data: '',
+                  success: function( response ) {
+                    $('##{options[:update]}').html(response.body);
                   }
-                })
-                .done( ( html ) => {
-                  #{options[:complete]};
-                  $('##{options[:update]}').html(html);
                 });
               });"
-
         javascript_tag(js)
       end
 

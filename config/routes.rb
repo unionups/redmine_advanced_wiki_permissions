@@ -26,7 +26,7 @@ RedmineApp::Application.routes.draw do
     end
   end
   resource :permissions, path: "projects/:project_id/wiki/:id/permissions", controller: 'wiki_permissions' do
-    match "/autocomplete_for_member", to: 'wiki_permissions#autocomplete_for_member', via: :all
+    get "/autocomplete_for_member", to: 'wiki_permissions#autocomplete_for_member'
     match "/ignore_permissions", to: 'wiki#ignore_permissions', via: [:post, :put, :patch]
     get "/ignore_permissions", to: 'wiki#show'
     match "/update_following_wpps", to: 'wiki_permissions#update_following_wpps',
