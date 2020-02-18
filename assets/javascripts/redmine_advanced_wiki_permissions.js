@@ -4,7 +4,7 @@ function ready() {
     $('#ajax-indicator').hide();
   });
   document.body.addEventListener('ajax:beforeSend', function() {
-    $('#ajax-indicator').show();
+    // $('#ajax-indicator').show();
   });
 }
 
