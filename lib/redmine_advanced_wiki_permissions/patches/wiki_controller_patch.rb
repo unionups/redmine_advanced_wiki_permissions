@@ -170,7 +170,7 @@ module RedmineAdvancedWikiPermissions
              @project.module_enabled?('wiki') &&
              @project.module_enabled?('redmine_advanced_wiki_permissions')
             if User.current.wiki_allowed_to?(@page, :protect_wiki_pages)
-              protect_without_wiki_permissions
+              super
             else
               deny_access
             end
@@ -185,7 +185,7 @@ module RedmineAdvancedWikiPermissions
              @project.module_enabled?('wiki') &&
              @project.module_enabled?('redmine_advanced_wiki_permissions')
             if User.current.wiki_allowed_to?(@page, :view_wiki_edits)
-              history_without_wiki_permissions
+              super
             else
               deny_access
             end
